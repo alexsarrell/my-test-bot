@@ -10,7 +10,7 @@ class TestEntity(
     val testId: Long = 0,
     @Column(name = "test_name")
     val testName: String = "",
-    @ManyToMany(cascade = [CascadeType.ALL])
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
         name = "test_question",
         joinColumns = [JoinColumn(name = "test_id")],

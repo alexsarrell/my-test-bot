@@ -31,7 +31,8 @@ class TestServiceImpl(private val testRepo: TestRepo) : TestService {
         ),
         wrongAnswers = this.wrongAnswers.map {
             it.toDto()
-        }
+        },
+        imageUrl = this.imageUrl
     )
 
     private fun AnswerEntity.toDto() = AnswerDto(

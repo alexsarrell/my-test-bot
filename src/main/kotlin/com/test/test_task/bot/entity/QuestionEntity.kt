@@ -8,13 +8,15 @@ class QuestionEntity(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "question_id")
     val id: Long,
+    @Column(name = "image_url")
+    val imageUrl: String?,
     val questionText: String,
     @ManyToMany(mappedBy = "questions")
     val tests: List<TestEntity>,
     @OneToOne
     @JoinColumn(name = "answer_id", referencedColumnName = "answer_id")
     val answer: AnswerEntity,
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
         name = "question_answer",
         joinColumns = [JoinColumn(name = "question_id")],
