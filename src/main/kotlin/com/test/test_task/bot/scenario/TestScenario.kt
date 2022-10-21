@@ -1,6 +1,7 @@
 package com.test.test_task.bot.scenario
 
 import com.justai.jaicf.builder.createModel
+import com.justai.jaicf.channel.telegram.telegram
 import com.justai.jaicf.model.scenario.Scenario
 import com.test.test_task.bot.service.TestService
 import org.springframework.beans.factory.annotation.Autowired
@@ -12,32 +13,37 @@ import javax.servlet.ServletContext
 
 @Component
 class TestScenario(testService: TestService) : Scenario {
-    @Value("\${project-path}")
-    lateinit var resourcesPath: String
     private var scope: Int = 0
     private val test = testService.findById(1)
     private val questions = test.questions
-    private var questionNumber = 0
+    private var questionNumber = 1
     override val model = createModel {
         state("test"){
             action {
-                reactions.go("/TestScenario/test/question")
+                reactions.telegram?.go("/TestScenario/test/question")
             }
             state("question"){
                 action {
                     if(questionNumber < questions.size){
-                        reactions.say("Great! The next question is: ${questions[questionNumber].text}")
+                        reactions.telegram?.say("Great! The next question is: ${questions[questionNumber].text}")
                         if(questions[questionNumber].imageUrl != null){
-                            val fileName = questions[questionNumber].imageUrl!!.replace("/", "\\")
-                            reactions.image("$resourcesPath\\img$fileName")
+                            reactions.telegram?.image(questions[questionNumber].imageUrl!!)
                         }
                         for(answer in questions[questionNumber].wrongAnswers){
-                            reactions.buttons(answer.text)
+                            if(answer.text.length < 60){
+                                reactions.telegram?.buttons(answer.text)
+                            }
+                            else{
+                                reactions.telegram?.buttons(answer.text.substring(0, 60))
+                            }
                         }
                     }
                     else{
-                        reactions.say("The text is complete! Your result: ${(scope/(questions.size/100))}%, $scope/${questions.size} answers is right")
-                        reactions.go("/TestScenario/end")
+                        val percents = (scope.toFloat()/(questions.size.toFloat()/100)).toInt()
+
+                        reactions.telegram?.say("The test is complete! Your result is: $percents%, " +
+                                "$scope/${questions.size} answers is right")
+                        reactions.telegram?.go("/TestScenario/end")
                     }
                 }
                 state("answer"){
@@ -45,16 +51,16 @@ class TestScenario(testService: TestService) : Scenario {
                         catchAll()
                     }
                     action {
-                        if(request.input == questions[questionNumber].answer.text){
-                            reactions.say("The right answer!")
+                        if(questions[questionNumber].answer.text.startsWith(request.telegram?.input!!)){
+                            reactions.telegram?.say("The right answer!")
                             scope++
                             questionNumber++
-                            reactions.go("/TestScenario/test/question")
+                            reactions.telegram?.go("/TestScenario/test/question")
                         }
                         else{
-                            reactions.say("The answer is wrong...")
+                            reactions.telegram?.say("The answer is wrong...")
                             questionNumber++
-                            reactions.go("/TestScenario/test/question")
+                            reactions.telegram?.go("/TestScenario/test/question")
                         }
                     }
                 }
@@ -63,7 +69,7 @@ class TestScenario(testService: TestService) : Scenario {
 
         state("end"){
             action {
-                reactions.goBack(scope)
+                reactions.telegram?.goBack(scope)
             }
         }
     }

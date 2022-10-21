@@ -3,8 +3,6 @@ bot:
   helloImageUrl: "https://media.giphy.com/media/ICOgUNjpvO0PC/source.gif"
   byeImageUrl: "https://media.giphy.com/media/EE185t7OeMbTy/source.gif"
 
-project-path: C:\Users\alexs\Desktop\Test\my-test-bot
-
 
 spring:
   datasource:

@@ -1,6 +1,7 @@
 package com.test.test_task.bot.scenario
 
 import com.justai.jaicf.builder.createModel
+import com.justai.jaicf.channel.telegram.telegram
 import com.justai.jaicf.model.scenario.Scenario
 import com.test.test_task.bot.dto.RespondentDto
 import com.test.test_task.bot.service.RespondentService
@@ -16,25 +17,25 @@ class ParticipationScenario(private val testScenario: TestScenario,
         append(context = "TestScenario", testScenario)
         state("participation", modal = true){
             action {
-                reactions.go("/ParticipationScenario/participation/name")
+                reactions.telegram?.go("/ParticipationScenario/participation/name")
             }
             state("name", modal = true){
                 action{
-                    reactions.say("Great! At first, enter your name")
+                    reactions.telegram?.say("Great! At first, enter your name")
                 }
                 state("enterName", modal = true){
                     activators {
                         catchAll()
                     }
                     action {
-                        respondentName = request.input
-                        reactions.go("/ParticipationScenario/participation/experience")
+                        respondentName = request.telegram?.input.toString()
+                        reactions.telegram?.go("/ParticipationScenario/participation/experience")
                     }
                 }
             }
             state("experience", modal = true){
                 action{
-                    reactions.say("Good! Now enter your experience")
+                    reactions.telegram?.say("Good! Now enter your experience")
                 }
                 state("enterExp", modal = true){
                     activators {
@@ -43,14 +44,14 @@ class ParticipationScenario(private val testScenario: TestScenario,
                     action {
                         var isValid = true
                         try{
-                            respondentExperience = request.input.toInt()
+                            respondentExperience = request.telegram?.input!!.toInt()
                         }catch (formatEx: NumberFormatException){
-                            reactions.say("Please, enter the valid number of years")
+                            reactions.telegram?.say("Please, enter the valid number of years")
                             isValid = false
-                            reactions.changeState("/ParticipationScenario/participation/experience")
+                            reactions.telegram?.changeState("/ParticipationScenario/participation/experience")
                         }
                         if(isValid){
-                            reactions.run{
+                            reactions.telegram?.run{
                                 say("Great! Is that right?")
                                 say("Your name is: ${respondentName}, and your experience is: " +
                                         "$respondentExperience")
@@ -63,7 +64,7 @@ class ParticipationScenario(private val testScenario: TestScenario,
                             regex("Yes, that's right")
                         }
                         action {
-                            reactions.go("/ParticipationScenario/participation/continue")
+                            reactions.telegram?.go("/ParticipationScenario/participation/continue")
                         }
                     }
                     state("noEdit", modal = true){
@@ -71,25 +72,25 @@ class ParticipationScenario(private val testScenario: TestScenario,
                             regex("No, I want to edit")
                         }
                         action {
-                            reactions.say("Okay!")
+                            reactions.telegram?.say("Okay!")
                             respondentExperience = 0
                             respondentName = ""
-                            reactions.go("/ParticipationScenario/participation/name")
+                            reactions.telegram?.go("/ParticipationScenario/participation/name")
                         }
                     }
                 }
             }
             state("continue", modal = true){
                 action {
-                    reactions.say("Wonderful! Registration is complete, click the \"Start\" button when you are ready to start!")
-                    reactions.buttons("Start")
+                    reactions.telegram?.say("Wonderful! Registration is complete, click the \"Start\" button when you are ready to start!")
+                    reactions.telegram?.buttons("Start")
                 }
                 state("startTest", modal = true){
                     activators {
                         regex("Start")
                     }
                     action {
-                        reactions.go("/TestScenario/test", callbackState = "/goMain")
+                        reactions.telegram?.go("/TestScenario/test", callbackState = "/ParticipationScenario/participation/goMain")
                     }
                 }
             }

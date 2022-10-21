@@ -15,6 +15,7 @@ java.sourceCompatibility = JavaVersion.VERSION_17
 
 repositories {
 	mavenCentral()
+	maven(uri("https://jitpack.io"))
 }
 
 dependencies {
@@ -28,6 +29,7 @@ dependencies {
 	implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 
+	implementation("com.just-ai.jaicf:telegram:$jaicf")
 	implementation("com.just-ai.jaicf:core:$jaicf")
 	implementation("com.just-ai.jaicf:jaicp:$jaicf")
 	implementation("com.just-ai.jaicf:caila:$jaicf")

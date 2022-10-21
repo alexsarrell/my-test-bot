@@ -2,6 +2,7 @@ package com.test.test_task.bot.scenario
 
 import com.justai.jaicf.activator.caila.caila
 import com.justai.jaicf.builder.createModel
+import com.justai.jaicf.channel.telegram.telegram
 import com.justai.jaicf.model.scenario.Scenario
 import com.test.test_task.bot.configuration.BotConfiguration
 import org.springframework.stereotype.Component
@@ -22,7 +23,7 @@ class MainScenario(
                 intent("Hello")
             }
             action {
-                reactions.run {
+                reactions.telegram?.run {
                     image(botConfiguration.helloImageUrl)
                     sayRandom(
                         "Hello! Welcome to the Kotlin tournament!",
@@ -42,7 +43,7 @@ class MainScenario(
             }
 
             action {
-                reactions.run{
+                reactions.telegram?.run{
                     say("To participate, fill out our form")
                     say("Do you want to participate?")
                     buttons(
@@ -56,7 +57,7 @@ class MainScenario(
                     regex("Yes, i want!")
                 }
                 action {
-                    reactions.go("/ParticipationScenario/participation", callbackState = "/start")
+                    reactions.telegram?.go("/ParticipationScenario/participation", callbackState = "/start")
                 }
             }
         }
@@ -67,11 +68,11 @@ class MainScenario(
             }
 
             action {
-                reactions.sayRandom(
+                reactions.telegram?.sayRandom(
                     "See you soon!",
                     "Bye-bye!"
                 )
-                reactions.image(botConfiguration.byeImageUrl)
+                reactions.telegram?.image(botConfiguration.byeImageUrl)
             }
         }
 
@@ -81,12 +82,12 @@ class MainScenario(
             }
 
             action(caila) {
-                activator.topIntent.answer?.let { reactions.say(it) } ?: reactions.go("/fallback")
+                activator.topIntent.answer?.let { reactions.telegram?.say(it) } ?: reactions.telegram?.go("/fallback")
             }
         }
 
         fallback {
-            reactions.sayRandom(
+            reactions.telegram?.sayRandom(
                 "Sorry, I didn't get that...",
                 "Sorry, could you repeat please?"
             )
