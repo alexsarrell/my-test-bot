@@ -18,18 +18,15 @@ repositories {
 }
 
 dependencies {
-	annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
+	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+	implementation("org.springframework.boot:spring-boot-starter-web")
+	runtimeOnly("mysql:mysql-connector-java")
 
-	implementation(kotlin("stdlib"))
+	annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
 	implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
-
-	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
-
-	implementation("org.springframework.boot:spring-boot-starter-data-jdbc")
-	implementation("org.springframework.boot:spring-boot-starter-web")
-	runtimeOnly("mysql:mysql-connector-java")
+	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 
 	implementation("com.just-ai.jaicf:core:$jaicf")
 	implementation("com.just-ai.jaicf:jaicp:$jaicf")

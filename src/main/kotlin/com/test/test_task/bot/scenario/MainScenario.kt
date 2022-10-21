@@ -4,6 +4,9 @@ import com.justai.jaicf.activator.caila.caila
 import com.justai.jaicf.builder.createModel
 import com.justai.jaicf.model.scenario.Scenario
 import com.test.test_task.bot.configuration.BotConfiguration
+import org.springframework.stereotype.Component
+
+@Component
 
 class MainScenario(
     private val botConfiguration: BotConfiguration,
@@ -53,7 +56,7 @@ class MainScenario(
                     regex("Yes, i want!")
                 }
                 action {
-                    reactions.go("/ParticipationScenario/name", callbackState = "/start")
+                    reactions.go("/ParticipationScenario/participation", callbackState = "/start")
                 }
             }
         }
