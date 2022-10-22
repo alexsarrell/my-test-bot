@@ -16,7 +16,7 @@ class TestScenario(testService: TestService) : Scenario {
     private var scope: Int = 0
     private val test = testService.findById(1)
     private val questions = test.questions
-    private var questionNumber = 1
+    private var questionNumber = 0
     override val model = createModel {
         state("test"){
             action {
