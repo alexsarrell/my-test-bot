@@ -6,6 +6,7 @@ import com.justai.jaicf.model.scenario.Scenario
 import com.test.test_task.bot.service.TestService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.context.annotation.Scope
 import org.springframework.core.io.ClassPathResource
 import org.springframework.core.io.ResourceLoader
 import org.springframework.stereotype.Component

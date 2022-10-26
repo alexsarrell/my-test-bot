@@ -5,16 +5,14 @@ import com.justai.jaicf.builder.createModel
 import com.justai.jaicf.channel.telegram.telegram
 import com.justai.jaicf.model.scenario.Scenario
 import com.test.test_task.bot.configuration.BotConfiguration
+import org.springframework.context.annotation.Scope
 import org.springframework.stereotype.Component
 
 @Component
-
 class MainScenario(
     private val botConfiguration: BotConfiguration,
     private val participationScenario: ParticipationScenario
     ): Scenario {
-
-
     override val model = createModel {
         append(context = "ParticipationScenario", participationScenario)
         state("start") {

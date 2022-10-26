@@ -10,6 +10,7 @@ import com.justai.jaicf.logging.Slf4jConversationLogger
 import com.test.test_task.bot.scenario.MainScenario
 import com.test.test_task.bot.scenario.ParticipationScenario
 import com.test.test_task.bot.scenario.TestScenario
+import org.springframework.context.annotation.Scope
 import org.springframework.stereotype.Component
 
 @Component

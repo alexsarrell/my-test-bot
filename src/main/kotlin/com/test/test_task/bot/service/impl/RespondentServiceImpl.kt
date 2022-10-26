@@ -4,6 +4,7 @@ import com.test.test_task.bot.dto.RespondentDto
 import com.test.test_task.bot.entity.RespondentEntity
 import com.test.test_task.bot.repo.RespondentRepo
 import com.test.test_task.bot.service.RespondentService
+import org.springframework.context.annotation.Scope
 import org.springframework.stereotype.Service
 
 @Service
