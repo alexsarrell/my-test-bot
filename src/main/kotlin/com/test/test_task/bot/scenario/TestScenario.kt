@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component
 import javax.servlet.ServletContext
 
 @Component
+@Scope("prototype")
 class TestScenario(testService: TestService) : Scenario {
     private var scope: Int = 0
     private val test = testService.findById(1)

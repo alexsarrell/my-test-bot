@@ -12,11 +12,12 @@ import org.springframework.stereotype.Component
 @Scope("prototype")
 class ParticipationScenario(private val testScenario: TestScenario,
                             private val respondentService: RespondentService) : Scenario {
-    var sessionsMap: HashMap<String, RespondentDto> = HashMap()
+    private lateinit var respondentDTO: RespondentDto
+    private var respondentName = ""
+    private var respondentExperience = 0
     override val model = createModel {
         append(context = "TestScenario", testScenario)
         state("participation", modal = true){
-
             action {
                 reactions.telegram?.go("/ParticipationScenario/participation/name")
             }
@@ -29,13 +30,7 @@ class ParticipationScenario(private val testScenario: TestScenario,
                         catchAll()
                     }
                     action {
-                        if(sessionsMap.containsKey(request.clientId)){
-                            val respondentDTO: RespondentDto = sessionsMap[request.clientId]!!
-                            respondentDTO.respondentName = request.telegram?.input!!
-                        }
-                        else{
-                            sessionsMap[request.clientId] = RespondentDto(request.telegram?.input!!, 0, 0)
-                        }
+                        respondentName = request.telegram?.input.toString()
                         reactions.telegram?.go("/ParticipationScenario/participation/experience")
                     }
                 }
@@ -51,10 +46,7 @@ class ParticipationScenario(private val testScenario: TestScenario,
                     action {
                         var isValid = true
                         try{
-                            if(sessionsMap.containsKey(request.clientId)){
-                                val respondentDTO: RespondentDto = sessionsMap[request.clientId]!!
-                                respondentDTO.respondentExperience = request.telegram?.input!!.toInt()
-                            }
+                            respondentExperience = request.telegram?.input!!.toInt()
                         }catch (formatEx: NumberFormatException){
                             reactions.telegram?.say("Please, enter the valid number of years")
                             isValid = false
@@ -63,8 +55,8 @@ class ParticipationScenario(private val testScenario: TestScenario,
                         if(isValid){
                             reactions.telegram?.run{
                                 say("Great! Is that right?")
-                                say("Your name is: ${sessionsMap[request.clientId]?.respondentName}, and your experience is: " +
-                                        "${sessionsMap[request.clientId]?.respondentExperience}")
+                                say("Your name is: ${respondentName}, and your experience is: " +
+                                        "$respondentExperience")
                                 buttons("Yes, that's right", "No, I want to edit")
                             }
                         }
@@ -83,6 +75,8 @@ class ParticipationScenario(private val testScenario: TestScenario,
                         }
                         action {
                             reactions.telegram?.say("Okay!")
+                            respondentExperience = 0
+                            respondentName = ""
                             reactions.telegram?.go("/ParticipationScenario/participation/name")
                         }
                     }
@@ -104,14 +98,12 @@ class ParticipationScenario(private val testScenario: TestScenario,
             }
             state("goMain"){
                 action{
-
-                    try{
-                        sessionsMap[request.telegram?.clientId!!]!!.respondentResult = context.result as Int
+                    respondentDTO = try{
+                        RespondentDto(respondentName, respondentExperience, context.result as Int)
                     } catch (ex: NumberFormatException){
-                        sessionsMap[request.telegram?.clientId!!]!!.respondentResult = 0
+                        RespondentDto(respondentName, respondentExperience, 0)
                     }
-                    respondentService.save(sessionsMap[request.telegram?.clientId!!]!!)
-                    sessionsMap.remove(request.telegram?.clientId!!)
+                    respondentService.save(respondentDTO)
                 }
             }
         }
